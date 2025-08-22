@@ -1,0 +1,13 @@
+*.o
+*.exe
+
+/build/
+/bin/
+/SDL2/
+
+*.log
+*.tmp
+
+*.dll
+
+compilacao.txt
