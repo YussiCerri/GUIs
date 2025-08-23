@@ -4,6 +4,7 @@
 /build/
 /bin/
 /SDL2/
+/SDL2_gfx/
 
 *.log
 *.tmp
@@ -11,3 +12,4 @@
 *.dll
 
 compilacao.txt
+SDL2_gfx.def
