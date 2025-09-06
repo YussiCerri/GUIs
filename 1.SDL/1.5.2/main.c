@@ -1,10 +1,18 @@
 #include <SDL2/SDL.h>
+#define TEMPO_UPDATE 100
+
+int AUX_WaitEventTimeoutCount(SDL_Event* evt, Uint32* ms){
+	Uint32 antes = SDL_GetTicks();
+	int temEvento = SDL_WaitEventTimeout(evt,*ms);
+	(*ms) = (temEvento)?(*ms)-(SDL_GetTicks()-antes):TEMPO_UPDATE;
+	return temEvento;
+}
 
 int main (int argc, char* args[])
 {
     /* INICIALIZACAO */
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window* win = SDL_CreateWindow("1.5.1",
+    SDL_Window* win = SDL_CreateWindow("1.5.2",
                          SDL_WINDOWPOS_UNDEFINED,
                          SDL_WINDOWPOS_UNDEFINED,
                          200, 100, SDL_WINDOW_SHOWN
@@ -17,6 +25,7 @@ int main (int argc, char* args[])
     SDL_Rect r3 = {0,0,10,10};//mouse - vermelho
     Uint32 tempo_ultimo = 0;
     int ydir = 1,xdir = 1;
+    Uint32 espera = TEMPO_UPDATE;
     while (1) {
         SDL_SetRenderDrawColor(ren, 0xFF,0xFF,0xFF,0x00);
         SDL_RenderClear(ren);
@@ -29,7 +38,7 @@ int main (int argc, char* args[])
         SDL_RenderPresent(ren);
 
         SDL_Event evt;
-        int isevt = SDL_WaitEventTimeout(&evt, 500);
+        int isevt = /*SDL_WaitEventTimeout(&evt, 500)*/AUX_WaitEventTimeoutCount(&evt,&espera);
         if (isevt) {
             if (evt.type == SDL_KEYDOWN) {//retângulo 2 - teclado
                 switch (evt.key.keysym.sym) {
