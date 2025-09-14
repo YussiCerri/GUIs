@@ -5,6 +5,7 @@ int AUX_WaitEventTimeoutCount(SDL_Event* evt, Uint32* ms){
 	Uint32 antes = SDL_GetTicks();
 	int temEvento = SDL_WaitEventTimeout(evt,*ms);
 	(*ms) = (temEvento)?(*ms)-(SDL_GetTicks()-antes):TEMPO_UPDATE;
+	(*ms) = (*ms > TEMPO_UPDATE)? TEMPO_UPDATE: *ms;//corrige subtrações com resultado abaixo de 0
 	return temEvento;
 }
 
