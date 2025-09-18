@@ -4,8 +4,7 @@
 int AUX_WaitEventTimeoutCount(SDL_Event* evt, Uint32* ms){
 	Uint32 antes = SDL_GetTicks();
 	int temEvento = SDL_WaitEventTimeout(evt,*ms);
-	(*ms) = (temEvento)?(*ms)-(SDL_GetTicks()-antes):TEMPO_UPDATE;
-	(*ms) = (*ms > TEMPO_UPDATE)? TEMPO_UPDATE: *ms;//corrige subtrações com resultado abaixo de 0
+	(*ms)-= (SDL_GetTicks() - antes);
 	return temEvento;
 }
 
@@ -24,7 +23,6 @@ int main (int argc, char* args[])
     SDL_Rect r1 = {0,0,10,10};//tempo - azul
     SDL_Rect r2 = {0,0,10,10};//teclado - verde
     SDL_Rect r3 = {0,0,10,10};//mouse - vermelho
-    Uint32 tempo_ultimo = 0;
     int ydir = 1,xdir = 1;
     Uint32 espera = TEMPO_UPDATE;
     while (1) {
@@ -39,7 +37,7 @@ int main (int argc, char* args[])
         SDL_RenderPresent(ren);
 
         SDL_Event evt;
-        int isevt = /*SDL_WaitEventTimeout(&evt, 500)*/AUX_WaitEventTimeoutCount(&evt,&espera);
+        int isevt = AUX_WaitEventTimeoutCount(&evt,&espera);
         if (isevt) {
             if (evt.type == SDL_KEYDOWN) {//retângulo 2 - teclado
                 switch (evt.key.keysym.sym) {
@@ -55,22 +53,15 @@ int main (int argc, char* args[])
 	    }
 	    else if(evt.type == SDL_QUIT) break;//permite fechar a janela
         }
-        if (SDL_GetTicks() - tempo_ultimo >= 100){//a cada 0.1 segundos atualiza
-        	if(xdir > 0 && r1.x+r1.w+xdir > 200) xdir = -xdir;
-        	else if(r1.x+xdir < 0)xdir = -xdir;
-        	if(ydir > 0 && r1.y+r1.h+ydir > 100) ydir = -ydir;
-        	else if(r1.y+ydir < 0)ydir = -ydir;
+        else{
+        	espera = TEMPO_UPDATE;
+        	if((xdir > 0 && r1.x+r1.w+xdir > 200)||(r1.x+xdir < 0)) xdir = -xdir;
+        	if((ydir > 0 && r1.y+r1.h+ydir > 100)||(r1.y+ydir < 0)) ydir = -ydir;
         	r1.x += xdir;
         	r1.y += ydir;
-        
-        
-        	tempo_ultimo = SDL_GetTicks();
         }
         
-        
-        
-        
-        
+        if(espera>1000)espera=0;//resolve problema de underflow com uint32
     }
 
     /* FINALIZACAO */
