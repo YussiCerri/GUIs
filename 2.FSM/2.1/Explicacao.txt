@@ -1,0 +1,1 @@
+Um retângulo é desenhado na tela representando seu "record" de cliques a de um evento de clique multiplo
