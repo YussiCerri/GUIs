@@ -1,0 +1,20 @@
+O struct AUX serve para armazenar todo o necessário para o controle do Drag, Drop, Cancel
+
+press indica o estado de se o mouse está pressionado no atual momento.
+drag  indica o estado de se um retângulo está sendo arrastado
+
+r armazena o ponteiro para o retângulo que está sendo movido
+orig possui a configuração inicial do ponteiro antes de ser arrastado
+p é um ponto temporario usado na verificação para saber se o retângulo foi apertado
+
+Ao reconhecer um clique do mouse, press passa a ser TRUE.
+Se ao pressionar o botão do mouse houver colisão com algum retângulo, então o ponteiro para o retângulo e seu estado atual são guardados
+
+Se press == TRUE durante o movimento do mouse, mas nenhum retângulo foi selecionado, então permanece drag == FALSE.
+Caso press == TRUE durante o movimento do mouse e existir um retângulo selecionado, então drag == TRUE e a posição do retângulo é alterada por referência
+case press == FALSE nada acontece ao mover o mouse
+
+Se o botão do mouse for liberado, então tanto press quanto drag passam a ser FALSE e o retângulo é 'droppado' na posição atual.
+
+Se ESC for pressionado enquanto drag == TRUE, então drag == FALSE e a posição anterior ao drag do retângulo é restaurada.
+
