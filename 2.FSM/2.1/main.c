@@ -21,6 +21,7 @@ void AguardaClick(ClickManager* cm){
 }
 void ColetaClick(ClickManager* cm){
 	cm->n++;
+	cm->tick1 = SDL_GetTicks();//reinicia o tempo de 250
 }
 void CliqueMultiplo(ClickManager* cm){
 	switch(cm->estado){
@@ -32,14 +33,18 @@ void CliqueMultiplo(ClickManager* cm){
 			break;
 	}
 }
+void InterrompeClique(ClickManager* cm){
+	cm->estado = 0;
+	cm->n = 0;
+}
 void VerificaTempoClick(ClickManager* cm){
+	SDL_Event evt;
 	if (cm->n && SDL_GetTicks() - cm->tick1 > 250) {
-            SDL_Event* evt = (SDL_Event*) malloc(sizeof(SDL_Event));//cria novo evento
-            evt->type = SDL_USEREVENT;
-			evt->user.code = cm->n;
+            evt.type = SDL_USEREVENT;
+			evt.user.code = cm->n;
             cm->estado = 0;
             cm->n = 0;
-            SDL_PushEvent(evt);
+            SDL_PushEvent(&evt);
     }
 }
 int main(int argc, char* args[]){
@@ -61,6 +66,9 @@ int main(int argc, char* args[]){
 					break;
 				case SDL_MOUSEBUTTONDOWN:
 					CliqueMultiplo(&cm);
+					break;
+				case SDL_MOUSEMOTION:
+					InterrompeClique(&cm);
 					break;
 				case SDL_USEREVENT://clique multiplo
 					r.w = evt.user.code*20;
